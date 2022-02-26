@@ -3,7 +3,7 @@ name: Package the application and produce executable
 on:
   push:
     tags:
-      - *
+      - '*'
 
 jobs:
   pypi_build:
