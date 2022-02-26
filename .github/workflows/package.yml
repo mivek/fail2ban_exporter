@@ -55,11 +55,11 @@ jobs:
       
       - name: Create an archive from the executable
         run: |
-          tar -czvf fail2ban_exporter_exec-${{steps.tag.outputs.tag}}.tar.gz -C ./dist fail2ban_exporter
+          tar -czvf fail2ban_exporter_executable-${{steps.tag.outputs.tag}}.tar.gz -C ./dist fail2ban_exporter
       - uses: actions/upload-artifact@v2
         with:
           name: fail2ban_exporter_executable
-          path: ./fail2ban_exporter.tar.gz
+          path: ./fail2ban_exporter_executable-*.tar.gz
   release:
     needs: [pypi_build, pyinstaller_build]
     runs-on: ubuntu-latest
