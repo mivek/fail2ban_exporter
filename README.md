@@ -11,12 +11,46 @@ Fail2ban exporter is an exporter for Prometheus.
 
 ## Python script
 
-TODO
+Check the latest version.
+
+Download the latest version.
+
+Unarchive it
+
+```
+wget https://github.com/mivek/fail2ban_exporter/releases/download/{{version}}/fail2ban_exporter-{{version}}.tar.gz
+tar -xzf fail2ban_exporter-{{version}}.tar.gz
+```
+
+Install the dependencies
+Launch the script
+
+```
+python -m pip install prometheus_client
+python fail2ban_exporter-0.0.2/src/fail2ban_exporter &
+```
+
+
 
 ## Python executable
 
-TODO
+Check the latest version
 
+Download the latest version of the executable
+
+Unarchive it.
+
+```
+wget https://github.com/mivek/fail2ban_exporter/releases/download/{{ version }}/fail2ban_exporter_executable-{{ version }}.tar.gz
+tar -xzf fail2ban_exporter_executable-{{version}}.tar.gz
+```
+
+Set the execution mod to the executable and run it as the user running fail2ban-client.
+
+```
+chmod ug+x fail2ban_exporter_executable-{{ version }}/fail2ban_exporter
+./fail2ban_exporter &
+```
 
 
 
