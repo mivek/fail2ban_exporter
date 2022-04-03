@@ -41,6 +41,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+      - name: Update cache and install upx
+        run: |
+          sudo apt-get update
+          sudo apt-get install upx
       - name: Install pipenv
         run: |
           python -m pip install --upgrade pip
