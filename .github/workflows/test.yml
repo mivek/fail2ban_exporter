@@ -2,21 +2,16 @@ name: Run unit tests
 
 on: [push]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: fail2ban_exporter
+
 jobs:
-  build:
-
+  lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
-
     steps:
-
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v3
+        
       - name: Install global dependencies
         run: |
           python -m pip install --upgrade pip
@@ -24,13 +19,40 @@ jobs:
       - name: Lint code with flake8
         run: |
           make flake8
+  build:
+    strategy:
+      matrix:
+        platform: [linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/386]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
 
-      - name: Install Pipenv and project dependencies
-        run: |
-          python -m pip install pipenv
-          make dependencies
-      
-      - name: Run the tests
-        run: |
-          make test
-          
+      - name: Set up Docker buildx 
+        uses: docker/setup-buildx-action@v2.0.0
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.0.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=test
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v3.1.1
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: ${{ matrix.platform }}
+
+      - name: Test the image is created
+        run: docker inspect ${{ steps.meta.outputs.tags }}
+
+      - uses: brpaz/structure-tests-action@v1.1.2
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          configFile: ./test/fail2ban_exporter_container_test.yml

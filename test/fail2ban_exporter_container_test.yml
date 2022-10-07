@@ -1,0 +1,9 @@
+schemaVersion: '2.0.0'
+fileExistenceTests:
+- name: 'Fail2ban Exporter folder'
+  path: '/fail2ban_exporter'
+  shouldExist: true
+metadataTest:
+  exposedPorts: ["9921"]
+  volumes: ["/var/run/fail2ban"]
+  entrypoint: [ "python", "-m", "fail2ban_exporter" ]
