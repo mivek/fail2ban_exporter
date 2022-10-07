@@ -2,6 +2,7 @@
 
 
 Fail2ban exporter is an exporter for Prometheus.
+The exporter exposes metrics on port 9921.
 
 ## Requirements 
 
@@ -52,7 +53,34 @@ chmod ug+x fail2ban_exporter_executable-{{ version }}/fail2ban_exporter
 ./fail2ban_exporter &
 ```
 
+## Docker image
 
+It is possible to run the exporter as a docker container.
+The parent folder of the fail2ban socket needs to be mapped.
+
+**Note**: Do not map the socket itself as it is destroyed whenever fail2ban is stopped.
+
+### Docker run
+
+```
+docker run -d \
+--name "fail2ban_exporter" \
+-v /var/run/fail2ban:/var/run/fail2ban:ro
+- p "9921:9921"
+ghcr.io/mivek/fail2ban_exporter:latest
+```
+
+### Docker compose
+
+```(yaml)
+services:
+    fail2ban_exporter:
+        image: ghcr.io/mivek/fail2ban_exporter:latest
+        ports:
+            - "9921:9921"
+        volumes:
+            - /var/run/fail2ban:/var/run/fail2ban:ro
+```
 
 # Metrics
 
